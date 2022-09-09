@@ -35,10 +35,27 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of Person
 // Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
+use std::string::ParseError;
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        if s == "" {
+            Person::default()
+        } else {
+            let words: Vec<&str> = s.split(',').collect();
+            let name = words[0];
+            if name == "" || words.len() != 2 {
+                Person::default()
+            } else {
+                let age_str = words[1];
+
+                let age: Result<usize, _> = age_str.parse::<usize>();
+                match age {
+                    Ok(num) => Person { name: name.to_string(), age: num },
+                    Err(_) => Person::default()
+                }
+            }
+        }
     }
 }
 
